@@ -6,10 +6,10 @@ package com.galaxy.data;
  *
  */
 public enum WeatherTypeEnum {
-	DROUDHT   ("Drought"),
-	RAIN   ("Rain"),
-	NOTRAIN   ("Not Rain"),
-	OPTIMUM ("Optomum");
+	DROUDHT   ("Sequia"),
+	RAIN   ("Llueve"),
+	NOTRAIN   ("No llueve"),
+	OPTIMUM ("Optimo");
 	
 	private final String type;
 	

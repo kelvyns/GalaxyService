@@ -18,7 +18,7 @@ public class GalaxyRestController {
 	
 	@Autowired
 	GalaxyService galaxyService;
-	
+
 	@RequestMapping("/initializeGalaxy")
 	Response initializeGalaxy(@RequestParam(value="precision", required=false, defaultValue="1") Integer precision) {
 		Integer prec;

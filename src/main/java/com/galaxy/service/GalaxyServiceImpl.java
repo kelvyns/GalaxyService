@@ -1,6 +1,7 @@
 package com.galaxy.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.galaxy.entity.Response;
 import com.galaxy.entity.ResponseWeather;
@@ -12,18 +13,22 @@ import com.galaxy.manager.GalaxyManager;
  * @author Kelvyns
  *
  */
+@Component
 public class GalaxyServiceImpl implements GalaxyService {
 
 	private static final long serialVersionUID = 7003801873234325840L;
 	
+	public GalaxyServiceImpl() {
+	}
+	
 	@Autowired
 	GalaxyManager galaxyManager;
-
+	
 	@Override
 	public Response initializeGalaxy(Integer precision) {
 		Boolean update = galaxyManager.initializeGalaxy(precision);
 		if(Boolean.TRUE.equals(update)){
-			return new Response(Response.OK, "Sucess");
+			return new Response(Response.OK, "Success");
 		}else {
 			return new Response(Response.FAIL, "Failed");
 		}
@@ -32,7 +37,7 @@ public class GalaxyServiceImpl implements GalaxyService {
 	@Override
 	public ResponseWeather getWeather(Integer day) {
 		Weather weather = galaxyManager.getWeather(day);
-		ResponseWeather responseWeather = new ResponseWeather(weather.getDay(), weather.getType().type());
+		ResponseWeather responseWeather = new ResponseWeather(weather.getDay(), weather.getWeatherType().type());
 		return responseWeather;
 	}
 
@@ -49,7 +54,7 @@ public class GalaxyServiceImpl implements GalaxyService {
 	@Override
 	public ResponseWeather getDayWithMaxRain() {
 		Weather weather = galaxyManager.getDayWithMaxRain();
-		ResponseWeather responseWeather = new ResponseWeather(weather.getDay(), weather.getType().type());
+		ResponseWeather responseWeather = new ResponseWeather(weather.getDay(), weather.getWeatherType().type());
 		return responseWeather;
 	}
 
