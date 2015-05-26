@@ -57,33 +57,7 @@ public class Util {
 		double x = radio * Math.sin(velocity * day * direction);
 		return x;
 	}
-
 	
-	/**
-	 * This method returns the triangle Area
-	 * @param a
-	 * @param b
-	 * @param c
-	 * @return area
-	 */
-	public static double triangleArea(double[] a, double[] b, double[] c){
-		// area = 0.5 * | D - I | => D = a*Y2 + b*Y3 + c*Y1 => I = Y1*b + Y2*c + Y3*a
-		double dD = a[0]*b[1] + b[0]*c[1] + c[0]*a[1];
-		double dI = a[1]*b[0] + b[1]*c[0] + c[1]*a[0];
-		double area = 0.5 * Math.abs( dD - dI);
-		return area;
-	}
-	
-	public static void main(String[] args) {
-		double[] a = {0 , 0 };
-		double[] b = {4 , 0 };
-		double[] c  = {4 , 5 };
-		double area = triangleArea(a, b, c);
-		double perimetro = trianglePerimeter(a, b, c);
-		System.out.println(area);
-		System.out.println(perimetro);
-		
-	}
 	/**
 	 * This methods returns the triangle perimeter
 	 * @param a
@@ -148,36 +122,6 @@ public class Util {
 	}
 	
 	/**
-	 * This method returns true if the point p is in area
-	 * @param a
-	 * @param b
-	 * @param c
-	 * @param p
-	 * @return true or false
-	 */
-	public static boolean triangleInPointWithoutArea(double[] a, double[] b, double[] c, double[] p){
-		double area = triangleArea(a, b, c);
-		return triangleInPointWithArea(a,b,c,p, area);
-	}
-	
-	/**
-	 * This method returns true if the point p is in area
-	 * @param a
-	 * @param b
-	 * @param c
-	 * @param p
-	 * @param area
-	 * @return true or false
-	 */
-	public static boolean triangleInPointWithArea(double[] a, double[] b, double[] c, double[] p, double area){
-		// if the sum t1+t2+t3 = area  => It is in triangle area else it is out
-		double t1 = triangleArea(a, b, p);
-		double t2 = triangleArea(b, c, p);
-		double t3 = triangleArea(c, a, p);
-		return (t1 + t2 + t3) == area;
-	}
-	
-	/**
 	 * This method return true if the points are alined
 	 * @param a
 	 * @param b
@@ -198,10 +142,8 @@ public class Util {
 		if(precision >= 0 && precision < 4) {
 			decimals = (int) Math.pow(10,precision);
 		} 
-		System.out.println("p1:"+ p1 + ", p2:"+p2);
 		p1 = Math.rint(p1*decimals)/decimals;
         p2 = Math.rint(p2*decimals)/decimals;
-		System.out.println("p1:"+  p1 + ", p2:"+ p2);
 		return  p1 == p2; 
 	}
 }

@@ -11,7 +11,7 @@ import com.galaxy.entity.Weather;
  */
 public interface GalaxyManager extends Serializable{
 	
-	public Boolean initializeGalaxy(Integer precision);
+	public Boolean initializeGalaxy(Integer precision, Integer destroy);
 	public Weather getWeather(Integer day);
 	public Integer getDroughtDays();
 	public Integer getRainDays();

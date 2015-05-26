@@ -31,6 +31,10 @@ public class GalaxyManagerImpl implements GalaxyManager {
 	@Autowired
 	public WeatherRepository weatherRepository;
 	
+	public void setWeatherRepository(WeatherRepository weatherRepository) {
+		this.weatherRepository = weatherRepository;
+	}
+	
 	private Planet vulcano = new Planet(PlanetEnum.VULCANO.radius(),
 			PlanetEnum.VULCANO.velocity(), PlanetEnum.VULCANO.direction());
 	private Planet ferengi = new Planet(PlanetEnum.FERENGI.radius(),
@@ -40,31 +44,43 @@ public class GalaxyManagerImpl implements GalaxyManager {
 	
 	private final double[] SUN = {0,0};
 	
-	private void createGalaxy(int precision) {
-		int totalDays=365*10;
-		int day = 0;
-		for (int i = 0; i < totalDays; i++) {
-			logger.debug("********************************");
-			logger.debug("DIA: "+ i);
-			day = i;
-			interactionGalaxy( day, precision );
+	private void createGalaxy(int precision, Integer destroy) {
+		
+		if(!checkGalaxy(destroy)){
+			int totalDays=365*10;
+			int day = 0;
+			for (int i = 0; i <= totalDays; i++) {
+				logger.debug("DIA: "+ i);
+				day = i;
+				interactionGalaxy( day, precision );
+			}
 		}
+		
 	}
 	
+	private boolean checkGalaxy(Integer destroy) {
+		if(weatherRepository.count()>0){
+			if(destroy == 1){
+				weatherRepository.deleteAll();
+			}
+			return true;
+		}
+		return false;
+	}
+
 	private void interactionGalaxy(int day, int precision){
 		
 		logger.debug("Loanding the GALAXY ...");
 		loadGalaxy(day);
-		Weather weather = new Weather();
 		if(areThePointsAlined(precision)){
 			
 			logger.debug("The planets form a line	");
 			if(isSunAlinedWithPlanets(precision)){
 				logger.debug("The planets are in line with the SUN");
-				weather = weatherRepository.save(new Weather(WeatherTypeEnum.DROUDHT, 0, day));
+				 weatherRepository.save(new Weather(WeatherTypeEnum.DROUDHT, 0, day));
 			} else {
 				logger.debug("The planets are not in line with the SUN");
-				weather = weatherRepository.save(new Weather(WeatherTypeEnum.OPTIMUM, 0, day));
+				weatherRepository.save(new Weather(WeatherTypeEnum.OPTIMUM, 0, day));
 
 			}
 		}else {
@@ -73,14 +89,12 @@ public class GalaxyManagerImpl implements GalaxyManager {
 			if(isSunInTheTriangle()){
 				logger.debug("The SUN is in the triangle");
 				double perimeter = Util.trianglePerimeter(vulcano.getXY(), ferengi.getXY(), betasoide.getXY());
-				weather = weatherRepository.save(new Weather(WeatherTypeEnum.RAIN, perimeter, day));
+				weatherRepository.save(new Weather(WeatherTypeEnum.RAIN, perimeter, day));
 			} else {
-				weather = weatherRepository.save(new Weather(WeatherTypeEnum.NOTRAIN, 0, day));
+				weatherRepository.save(new Weather(WeatherTypeEnum.NOTRAIN, 0, day));
 				logger.debug("The SUN is out the triangle");
 			}
-		}
-		
-		System.out.println(weather.toString());
+		}	
 	}
 	
 	private boolean isSunAlinedWithPlanets(int precision){
@@ -113,29 +127,6 @@ public class GalaxyManagerImpl implements GalaxyManager {
 		
 	}
 	
-	@Override
-	public Boolean initializeGalaxy(Integer precision) {
-		logger.debug("initializeGalaxy");
-		try {
-			createGalaxy(precision);
-		} catch(Exception e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
-			return Boolean.FALSE;
-		}
-		return Boolean.TRUE;
-	}
-	@Override
-	public Weather getWeather(Integer day) {
-		try {
-			return weatherRepository.findByDay(day);
-		} catch(Exception e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
 	private Integer findByWeather(WeatherTypeEnum weatherTypeEnum){
 		try {
 			Collection<Weather> weatherColl = weatherRepository.findByWeatherType(weatherTypeEnum);
@@ -148,30 +139,62 @@ public class GalaxyManagerImpl implements GalaxyManager {
 	}
 	
 	@Override
-	public Integer getDroughtDays() {
-		return findByWeather(WeatherTypeEnum.DROUDHT);
-	}
-	@Override
-	public Integer getRainDays() {
-		return findByWeather(WeatherTypeEnum.RAIN);
-	}
-	@Override
-	public Weather getDayWithMaxRain() {
+	public Boolean initializeGalaxy(Integer precision, Integer destroy) {
+		logger.debug("initializeGalaxy");
 		try {
-			Collection<Weather> weatherColl = weatherRepository.findByWeatherType(WeatherTypeEnum.RAIN);
-			Weather weatherMax = new Weather(WeatherTypeEnum.RAIN, 0.0, 0);
-			for (Weather weather : weatherColl) {
-				if( weatherMax.getPerimeter() < weather.getPerimeter() ) {
-					weatherMax = weather;
-				}
-			}
-			return weatherMax;
+			createGalaxy(precision, destroy);
+		} catch(Exception e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+			return Boolean.FALSE;
+		}
+		return Boolean.TRUE;
+	}
+	
+	@Override
+	public Weather getWeather(Integer day) {
+		try {
+			return weatherRepository.findByDay(day);
 		} catch(Exception e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
 			return null;
 		}
 	}
+	
+	@Override
+	public Integer getDroughtDays() {
+		return findByWeather(WeatherTypeEnum.DROUDHT);
+	}
+	
+	@Override
+	public Integer getRainDays() {
+		return findByWeather(WeatherTypeEnum.RAIN);
+	}
+	
+	@Override
+	public Weather getDayWithMaxRain() {
+		try {
+			Collection<Weather> weatherColl = weatherRepository.findByWeatherType(WeatherTypeEnum.RAIN);
+			if(weatherColl!=null && weatherColl.size()>0){
+				Weather weatherMax = new Weather(WeatherTypeEnum.RAIN, 0.0, 0);
+				for (Weather weather : weatherColl) {
+					if( weatherMax.getPerimeter() < weather.getPerimeter() ) {
+						weatherMax = weather;
+					}
+				}
+				return weatherMax;
+			}else {
+				return null;
+			}
+			
+		} catch(Exception e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	@Override
 	public Integer getOptimalDays() {
 		return findByWeather(WeatherTypeEnum.OPTIMUM);

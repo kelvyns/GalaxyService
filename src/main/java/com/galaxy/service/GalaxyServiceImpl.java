@@ -25,8 +25,8 @@ public class GalaxyServiceImpl implements GalaxyService {
 	GalaxyManager galaxyManager;
 	
 	@Override
-	public Response initializeGalaxy(Integer precision) {
-		Boolean update = galaxyManager.initializeGalaxy(precision);
+	public Response initializeGalaxy(Integer precision, Integer destroy) {
+		Boolean update = galaxyManager.initializeGalaxy(precision, destroy);
 		if(Boolean.TRUE.equals(update)){
 			return new Response(Response.OK, "Success");
 		}else {
@@ -54,8 +54,7 @@ public class GalaxyServiceImpl implements GalaxyService {
 	@Override
 	public ResponseWeather getDayWithMaxRain() {
 		Weather weather = galaxyManager.getDayWithMaxRain();
-		ResponseWeather responseWeather = new ResponseWeather(weather.getDay(), weather.getWeatherType().type());
-		return responseWeather;
+		return new ResponseWeather(weather.getDay(), "El dia que mas llueve");
 	}
 
 	@Override

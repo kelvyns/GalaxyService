@@ -12,7 +12,7 @@ import com.galaxy.entity.ResponseWeather;
  */
 public interface GalaxyService extends Serializable{
 	
-	public Response initializeGalaxy(Integer prec);
+	public Response initializeGalaxy(Integer prec, Integer destroy);
 	public ResponseWeather getWeather(Integer day);
 	public Integer getDroughtDays();
 	public Integer getRainDays();
