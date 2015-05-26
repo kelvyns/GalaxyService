@@ -21,8 +21,6 @@ public class UtilTests extends Util {
 
 	@Test
 	public void test() {
-		
-		
 		double[] sol = {0 , 0 };
 		double[] a = {0 , 0 };
 		double[] b = {4 , 0 };
@@ -49,9 +47,5 @@ public class UtilTests extends Util {
 		
 		boolean inSol = Util.triangleInPointByOrientation(a, b, c, sol);	
         Assert.assertEquals(inSol, true);
-  
-        
-		
 	}
-
 }

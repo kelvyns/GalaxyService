@@ -60,7 +60,7 @@ public class GalaxyRestController {
 	
 	@RequestMapping("/clima")
 	ResponseWeather getWeather(@RequestParam(value="dia", required=true) Integer day) throws BusinessException{
-		if(day==null || day<0 || day>3600 ){
+		if(day==null || day<0 || day>3650 ){
 			throw BusinessException.init(BusinessException.WEATHER);
 		}
 		return galaxyService.getWeather(day);
